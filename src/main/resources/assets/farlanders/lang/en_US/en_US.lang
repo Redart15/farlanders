@@ -15,5 +15,5 @@ subtitles.mob.farlander.slip = Farlander slip
 subtitles.mob.farlander.whispering = Farlander whispers
 
 # GUIDEBOOK #
-farlanders.guidebook.section.mob.farlander.name = Farlander
-farlanders.guidebook.section.mob.farlander.desc = Their lens can be used for goggles that can see through walls, and their pearls can be used for transportation and smoke.
+guidebook.section.mob.farlanders.farlander.name = Farlander
+guidebook.section.mob.farlanders.farlander.desc = Their lens can be used for goggles that can see through walls, and their pearls can be used for transportation and smoke.

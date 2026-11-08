@@ -11,16 +11,22 @@ import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.enums.HumanArmorShape;
+import net.minecraft.core.item.IItemConvertible;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemArmor;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.item.material.ArmorMaterial;
 import net.minecraft.core.sound.BlockSounds;
 import net.minecraft.core.util.collection.NamespaceID;
+import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.event.defs.CommonEvents;
 import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryPlacement;
+import turniplabs.halplibe.helper.creativeInventory.CreativeInventoryRegistry;
 import turniplabs.halplibe.util.dependency.Key;
+
+import java.util.function.Supplier;
 
 import static cookie.farlanders.core.FarlandersGlobals.MOD_ID;
 
@@ -49,9 +55,18 @@ public class Farlanders implements ModInitializer {
 	}
 
 	public void afterItemInit() {
-		FARLANDER_LENS = new Item("lens", FarlandersGlobals.formatName("lens", "item"), baseIDItem++);
-		FARLANDER_PEARL = new ItemLogicFarlanderPearl("pearl", FarlandersGlobals.formatName("pearl", "item"), baseIDItem++);
-		FARLANDER_GOGGLES = new ItemArmor<>("armor.helmet.goggles", FarlandersGlobals.formatName("armor_helmet_goggles", "item"), baseIDItem++, material, HumanArmorShape.HEAD);
+		FARLANDER_LENS = new Item(FarlandersGlobals.formatTranslationKey("lens"), FarlandersGlobals.formatName("lens", "item"), baseIDItem++);
+		FARLANDER_PEARL = new ItemLogicFarlanderPearl(FarlandersGlobals.formatTranslationKey("pearl"), FarlandersGlobals.formatName("pearl", "item"), baseIDItem++);
+		FARLANDER_GOGGLES = new ItemArmor<>(FarlandersGlobals.formatTranslationKey("armor.helmet.goggles"), FarlandersGlobals.formatName("armor_helmet_goggles", "item"), baseIDItem++, material, HumanArmorShape.HEAD);
+
+		CreativeInventoryRegistry.INSTANCE.register(SMOKER, place(() -> Blocks.THERMAL_VENT));
+		CreativeInventoryRegistry.INSTANCE.register(FARLANDER_GOGGLES, place(() -> Items.ARMOR_WOLF_GOLD));
+		CreativeInventoryRegistry.INSTANCE.register(FARLANDER_LENS, place(() -> Items.RUBYGLASS));
+		CreativeInventoryRegistry.INSTANCE.register(FARLANDER_PEARL, place(() -> Items.AMMO_ARROW_FLAMING));
+	}
+
+	private static CreativeInventoryPlacement.@NotNull After place(Supplier<IItemConvertible> iItemConvertibleSupplier) {
+		return new CreativeInventoryPlacement.After(iItemConvertibleSupplier);
 	}
 
 	public void afterBlockInit() {

@@ -44,37 +44,39 @@ public abstract class MobRendererMixin<T extends Mob> extends EntityRenderer<T> 
 	@Final
 	private @NotNull List<@Nullable StaticEntityModel> setupModels;
 
-	@Inject(
-		method = "render(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;DDDFF)V",
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/render/entity/MobRenderer;renderAdditional(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;F)V"
-		)
-	)
+	@Shadow protected abstract void preRenderTransform(T entity, double x, double y, double z, float yaw, float partialTick);
+	@Shadow protected abstract int maxRenderLayer(T entity);
+	@Shadow protected abstract StaticEntityModel getAndSetupModelForLayer(T entity, float scale, float partialTick, int layer);
+
+	@Inject(method = "render(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;DDDFF)V", at = @At("HEAD"))
 	private void farlanders_outline(@NotNull TessellatorGeneral tessellator, @NotNull T entity, double x, double y, double z, float yaw, float partialTick, CallbackInfo ci) {
 		if (!farlanders_shouldRenderOutline(entity)) return;
 
-		float alpha = Math.max(0.2F, (float) entity.getHealth() / entity.getMaxHealth());
+		float alpha = Math.max(1.0F, (float) entity.getHealth() / entity.getMaxHealth());
+		int maxLayer = this.maxRenderLayer(entity);
 		int passes = 8;
-		// preRenderTransform scales by 0.0625, so convert blocks to model units
-		float offset = 0.05f / 0.0625f;
+		float offset = 0.05f;
 
 		this.loadEntityTexture(entity);
-
 		GLRenderer.pushFrame();
 		GLRenderer.enableState(State.BLEND);
+		GLRenderer.disableState(State.CULL_FACE);
 		GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE);
-		GLRenderer.setDepthFunc(CompareFunc.ALWAYS);
+		GLRenderer.setDepthFunc(CompareFunc.ALWAYS);   // still unverified enum value
 		GLRenderer.setDepthMask(false);
 		GLRenderer.setColor4f(0.0F, 0.5F, 1.0F, alpha);
 
 		for (int i = 0; i < passes; i++) {
 			float angle = (float) (i * 2 * Math.PI / passes);
-
 			GLRenderer.pushFrame();
-			GLRenderer.modelM4f().translate((float) Math.cos(angle) * offset, 0.0F, (float) Math.sin(angle) * offset);
-			for (StaticEntityModel model : this.setupModels) {
-				if (model != null) model.render();
+			this.preRenderTransform(entity, x + Math.cos(angle) * offset, y, z + Math.sin(angle) * offset, yaw, partialTick);
+			for (int layer = 0; layer <= maxLayer; layer++) {
+				try {
+					GLRenderer.pushFrame();
+					StaticEntityModel model = this.getAndSetupModelForLayer(entity, 1.0F, partialTick, layer);
+					if (model != null) model.render();
+					GLRenderer.popFrame();
+				} catch (Exception ignored) {}
 			}
 			GLRenderer.popFrame();
 		}
@@ -85,6 +87,48 @@ public abstract class MobRendererMixin<T extends Mob> extends EntityRenderer<T> 
 		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GLRenderer.popFrame();
 	}
+
+//	@Inject(
+//		method = "render(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;DDDFF)V",
+//		at = @At(
+//			value = "INVOKE",
+//			target = "Lnet/minecraft/client/render/entity/MobRenderer;renderAdditional(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;F)V"
+//		)
+//	)
+//	private void farlanders_outline(@NotNull TessellatorGeneral tessellator, @NotNull T entity, double x, double y, double z, float yaw, float partialTick, CallbackInfo ci) {
+//		if (!farlanders_shouldRenderOutline(entity)) return;
+//
+//		float alpha = Math.max(0.2F, (float) entity.getHealth() / entity.getMaxHealth());
+//		int passes = 8;
+//		// preRenderTransform scales by 0.0625, so convert blocks to model units
+//		float offset = 0.05f / 0.0625f;
+//
+//		this.loadEntityTexture(entity);
+//
+//		GLRenderer.pushFrame();
+//		GLRenderer.enableState(State.BLEND);
+//		GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE);
+//		GLRenderer.setDepthFunc(CompareFunc.ALWAYS);
+//		GLRenderer.setDepthMask(false);
+//		GLRenderer.setColor4f(0.0F, 0.5F, 1.0F, alpha);
+//
+//		for (int i = 0; i < passes; i++) {
+//			float angle = (float) (i * 2 * Math.PI / passes);
+//
+//			GLRenderer.pushFrame();
+//			GLRenderer.modelM4f().translate((float) Math.cos(angle) * offset, 0.0F, (float) Math.sin(angle) * offset);
+//			for (StaticEntityModel model : this.setupModels) {
+//				if (model != null) model.render();
+//			}
+//			GLRenderer.popFrame();
+//		}
+//
+//		GLRenderer.setDepthMask(true);
+//		GLRenderer.setDepthFunc(CompareFunc.LESS_EQUAL);
+//		GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA);
+//		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//		GLRenderer.popFrame();
+//	}
 
 //	@Inject(method = "render(Lnet/minecraft/client/render/tessellator/TessellatorGeneral;Lnet/minecraft/core/entity/Mob;DDDFF)V", at = @At("HEAD"))
 //	private void farlanders_render(@NotNull TessellatorGeneral tessellator, @NotNull T entity, double x, double y, double z, float yaw, float partialTick, CallbackInfo ci) {
@@ -136,6 +180,9 @@ public abstract class MobRendererMixin<T extends Mob> extends EntityRenderer<T> 
 	private boolean farlanders_shouldRenderOutline(T entity) {
 		Player player = Minecraft.getMinecraft().thePlayer;
 		if (player == null || entity == null) {
+			return false;
+		}
+		if (entity instanceof Player otherPlayer && otherPlayer.uuid.equals(player.uuid)) {
 			return false;
 		}
 		boolean hasSonar = ((IPlayerSonar) player).farlanders$hasSonar();
