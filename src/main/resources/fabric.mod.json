@@ -12,7 +12,8 @@
 		"Apollo",
 		"Scaldings",
 		"Pain",
-		"Useless"
+		"Useless",
+		"Redart15"
 	],
 	"contact": {
 		"homepage": "",
@@ -24,45 +25,18 @@
 
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"cookie.farlanders.core.Farlanders"
-		],
-		"beforeGameStart": [
-			"cookie.farlanders.core.Farlanders"
-		],
-		"afterGameStart": [
-			"cookie.farlanders.core.Farlanders"
-		],
-		"afterBlockInit": [
-			"cookie.farlanders.core.block.FarlandersBlocks"
-		],
-		"afterItemInit": [
-			"cookie.farlanders.core.item.FarlandersItems"
-		],
-		"recipesReady": [
-			"cookie.farlanders.core.FarlandersRecipes"
-		],
-		"client": [
-			"cookie.farlanders.client.FarlandersClient"
-		],
-		"beforeClientStart": [
-			"cookie.farlanders.client.FarlandersClient"
-		],
-		"afterClientStart": [
-			"cookie.farlanders.client.FarlandersClient"
-		],
-		"initModels": [
-			"cookie.farlanders.client.render.FarlandersModels"
-		]
+		"main": 	["cookie.farlanders.core.Farlanders"],
+		"client": ["cookie.farlanders.client.FarlandersClient"]
 	},
 	"mixins": [
 		"farlanders.mixins.json"
 	],
 
 	"depends": {
+		"fabricloader": ">=${fabricloader}",
+		"halplibe": ">=${halplibe}",
 		"minecraft": "*",
-		"fabricloader": ">=0.13.3",
-		"dragonfly": "*"
+		"java": ">=${java}"
 	},
 	"suggests": {
 	}

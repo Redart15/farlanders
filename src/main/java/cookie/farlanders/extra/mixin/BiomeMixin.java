@@ -1,10 +1,8 @@
 package cookie.farlanders.extra.mixin;
 
-import cookie.farlanders.client.FarlandersClient;
-import cookie.farlanders.core.Farlanders;
 import cookie.farlanders.extra.FarlandersConfig;
-import cookie.farlanders.core.entity.MobEyes;
-import cookie.farlanders.core.entity.MobFarlander;
+import cookie.farlanders.core.features.MobEyes;
+import cookie.farlanders.core.features.MobFarlander;
 import net.minecraft.core.entity.SpawnListEntry;
 import net.minecraft.core.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;

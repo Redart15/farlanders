@@ -1,16 +1,17 @@
 package cookie.farlanders.extra;
 
-import cookie.farlanders.core.Farlanders;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
 
 import java.io.File;
 import java.io.IOException;
 
+import static cookie.farlanders.core.FarlandersGlobals.MOD_ID;
+
 public class FarlandersConfig {
+	private FarlandersConfig(){}
 	private static final Toml PROPERTIES = new Toml("Farlander's TOML Config");
 	public static TomlConfigHandler cfg;
-
 	static {
 		PROPERTIES.addCategory("Farlanders")
 			.addEntry("enableEntities", true)
@@ -23,23 +24,29 @@ public class FarlandersConfig {
 			.addEntry("startingBlockID", 6600)
 			.addEntry("startingItemID", 16600);
 
-		cfg = new TomlConfigHandler(Farlanders.MOD_ID, PROPERTIES);
+		cfg = new TomlConfigHandler(MOD_ID, PROPERTIES);
 
 		File configFile = cfg.getConfigFile();
-		if (cfg.getConfigFile().exists()) {
+
+		if (configFile.exists()) {
 			cfg.loadConfig();
 			cfg.setDefaults(cfg.getRawParsed());
 		} else {
 			cfg.setDefaults(PROPERTIES);
 			try {
-				//noinspection ResultOfMethodCallIgnored
-				configFile.getParentFile().mkdirs();
-				//noinspection ResultOfMethodCallIgnored
-				configFile.createNewFile();
+				File parent = configFile.getParentFile();
+				if (parent != null && !parent.exists() && !parent.mkdirs()) {
+					throw new IOException("Failed to create config directory: " + parent);
+				}
+				if (!configFile.createNewFile()) {
+					throw new IOException("Failed to create config file: " + configFile);
+				}
 				cfg.writeConfig();
 				cfg.loadConfig();
 			} catch (IOException e) {
-				throw new RuntimeException("Failed to generate config!", e);
+				throw new RuntimeException(
+					"Failed to create or initialize config file: " + configFile, e
+				);
 			}
 		}
 	}

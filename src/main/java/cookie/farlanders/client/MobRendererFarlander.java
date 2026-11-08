@@ -1,16 +1,19 @@
-package cookie.farlanders.client.render.entity;
+package cookie.farlanders.client;
 
-import cookie.farlanders.core.entity.MobFarlander;
+import cookie.farlanders.core.features.MobFarlander;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.LightmapHelper;
+import net.minecraft.client.render.entity.MobRenderer;
+import net.minecraft.client.render.renderer.BlendFactor;
+import net.minecraft.client.render.renderer.GLRenderer;
+import net.minecraft.client.render.renderer.State;
+import net.minecraft.client.render.tessellator.TessellatorGeneral;
 import net.minecraft.core.util.helper.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 import org.useless.dragonfly.models.entity.BoneTransform;
 import org.useless.dragonfly.models.entity.StaticEntityModel;
-import org.useless.dragonfly.renderer.MobRenderer;
+
 
 @Environment(EnvType.CLIENT)
 public class MobRendererFarlander extends MobRenderer<MobFarlander> {
@@ -21,20 +24,14 @@ public class MobRendererFarlander extends MobRenderer<MobFarlander> {
 	@Override
 	protected @Nullable StaticEntityModel getAndSetupModelForLayer(@NotNull MobFarlander entity, float brightness, float partialTick, int layer) {
 		if (layer == 1) {
-			bindTexture("/assets/farlanders/textures/entity/farlander/farlander_eyes.png");
-			if(LightmapHelper.isLightmapEnabled()) LightmapHelper.setLightmapCoord(LightmapHelper.getOverbrightLightmapCoord(15));
-
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		} else if (layer == 2) {
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
-			return null;
+			this.bindTexture("/assets/farlanders/textures/entity/eyes/eyes.png");
+			GLRenderer.setLightmapCoord2i(15, 15);
+			GLRenderer.enableState(State.BLEND);
+			GLRenderer.setBlendFunc(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA);
+			GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 
-		StaticEntityModel model = getModel("main");
+		StaticEntityModel model = this.getModel("main");
 		model.resetBones();
 
 		final float bodyYaw = getBodyYaw(entity, partialTick);
@@ -64,6 +61,11 @@ public class MobRendererFarlander extends MobRenderer<MobFarlander> {
 
 	@Override
 	protected int maxRenderLayer(@NotNull MobFarlander entity) {
-		return 2;
+		return 1;
+	}
+
+	@Override
+	public void renderPreview(@NotNull TessellatorGeneral tessellator, @NotNull MobFarlander entity, double x, double y, double z, float yaw, float partialTick) {
+		super.renderPreview(tessellator, entity, x, y - 2.0, z, yaw, partialTick);
 	}
 }
