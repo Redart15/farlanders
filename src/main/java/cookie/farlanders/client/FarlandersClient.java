@@ -3,6 +3,7 @@ package cookie.farlanders.client;
 import cookie.farlanders.core.Farlanders;
 import cookie.farlanders.core.features.MobEyes;
 import cookie.farlanders.core.features.MobFarlander;
+import cookie.farlanders.core.features.ProjectileFarlanderPearl;
 import cookie.farlanders.extra.FarlandersConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -63,6 +64,6 @@ public class FarlandersClient implements ClientModInitializer {
 	public void initEntityModels(EntityRendererDispatcher entityRenderDispatcher) {
 		entityRenderDispatcher.assignRenderer(MobEyes.class, new MobRendererEyes());
 		entityRenderDispatcher.assignRenderer(MobFarlander.class, new MobRendererFarlander());
-		entityRenderDispatcher.assignRenderer(MobEyes.class, new EntityRendererSprite<>(Farlanders.FARLANDER_PEARL));
+		entityRenderDispatcher.assignRenderer(ProjectileFarlanderPearl.class, new EntityRendererSprite<>(Farlanders.FARLANDER_PEARL));
 	}
 }
