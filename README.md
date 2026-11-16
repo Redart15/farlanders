@@ -4,10 +4,7 @@
 
 # Farlanders
 An alternate timeline variant of the Enderman, to scare your socks off!
-
-## Disclaimer
-This mod is an unofficial continuation of Farlanders, originally created by Cookie. As the original project has been abandoned, I have taken over its development and maintenance.
-The original project can still be found here.
+> **Disclaimer:** This mod is an unofficial continuation of Farlanders, originally created by [Cookie](https://github.com/DaCookieCakes). As the original project has been abandoned, I have taken over its development and maintenance. The original project can still be found [here](https://github.com/DaCookieCakes/farlanders).
 
 ## Prerequisites
 - [HalpLibe 6.2.0+8.0.1](<https://github.com/Turnip-Labs/bta-halplibe/releases/tag/5.2.4>)
