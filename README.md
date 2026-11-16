@@ -6,10 +6,10 @@
 An alternate timeline variant of the Enderman, to scare your socks off!
 > **Disclaimer:** This mod is an unofficial continuation of Farlanders, originally created by [Cookie](https://github.com/DaCookieCakes). As the original project has been abandoned, I have taken over its development and maintenance. The original project can still be found [here](https://github.com/DaCookieCakes/farlanders).
 
-## Prerequisites
+## 🔗 Dependecies:
 - [HalpLibe 6.2.0+8.0.1](<https://github.com/Turnip-Labs/bta-halplibe/releases/tag/v6.2.0>)
 
-## Setup instructions
+## 🔧 Setup instructions
 1. Download the BTA Babric Instance from the Turnip Labs GitHub. (https://github.com/Turnip-Labs/babric-instance-repo)
 2. Download Dragonfly and put it in the mods folder or MultiMC/Prism mods tab.
 3. Make sure HalpLibe is up to date.
