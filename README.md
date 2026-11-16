@@ -7,7 +7,7 @@ An alternate timeline variant of the Enderman, to scare your socks off!
 > **Disclaimer:** This mod is an unofficial continuation of Farlanders, originally created by [Cookie](https://github.com/DaCookieCakes). As the original project has been abandoned, I have taken over its development and maintenance. The original project can still be found [here](https://github.com/DaCookieCakes/farlanders).
 
 ## Prerequisites
-- [HalpLibe 6.2.0+8.0.1](<https://github.com/Turnip-Labs/bta-halplibe/releases/tag/5.2.4>)
+- [HalpLibe 6.2.0+8.0.1](<https://github.com/Turnip-Labs/bta-halplibe/releases/tag/v6.2.0>)
 
 ## Setup instructions
 1. Download the BTA Babric Instance from the Turnip Labs GitHub. (https://github.com/Turnip-Labs/babric-instance-repo)
